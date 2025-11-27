@@ -1,0 +1,93 @@
+================================================================================
+SPORTS CLASSIFICATION DATASET - DISTRIBUTION ANALYSIS REPORT
+================================================================================
+
+OVERALL STATISTICS
+--------------------------------------------------------------------------------
+Total number of classes: 100
+Total images: 14492
+  - Train: 11551 images
+  - Valid: 1405 images
+  - Test: 1536 images
+
+SPLIT RATIOS
+--------------------------------------------------------------------------------
+Train: 79.71%
+Valid: 9.70%
+Test: 10.60%
+
+IMBALANCE METRICS
+--------------------------------------------------------------------------------
+
+TRAIN:
+  Max images per class: 160
+  Min images per class: 55
+  Mean images per class: 115.51
+  Median images per class: 114.50
+  Standard deviation: 17.18
+  Imbalance ratio (max/min): 2.91
+  Coefficient of variation: 14.88%
+
+VALID:
+  Max images per class: 20
+  Min images per class: 6
+  Mean images per class: 14.05
+  Median images per class: 14.00
+  Standard deviation: 2.17
+  Imbalance ratio (max/min): 3.33
+  Coefficient of variation: 15.42%
+
+TEST:
+  Max images per class: 21
+  Min images per class: 8
+  Mean images per class: 15.36
+  Median images per class: 15.00
+  Standard deviation: 2.20
+  Imbalance ratio (max/min): 2.62
+  Coefficient of variation: 14.32%
+
+TOTAL:
+  Max images per class: 201
+  Min images per class: 69
+  Mean images per class: 144.92
+  Median images per class: 143.50
+  Standard deviation: 21.49
+  Imbalance ratio (max/min): 2.91
+  Coefficient of variation: 14.83%
+
+================================================================================
+TOP 10 MOST REPRESENTED CLASSES
+--------------------------------------------------------------------------------
+football                       :  201 images (Train: 160, Valid: 20, Test: 21)
+formula 1 racing               :  200 images (Train: 160, Valid: 20, Test: 20)
+nascar racing                  :  199 images (Train: 159, Valid: 19, Test: 21)
+baseball                       :  184 images (Train: 147, Valid: 18, Test: 19)
+hockey                         :  182 images (Train: 145, Valid: 18, Test: 19)
+basketball                     :  179 images (Train: 143, Valid: 17, Test: 19)
+olympic wrestling              :  177 images (Train: 141, Valid: 17, Test: 19)
+rugby                          :  176 images (Train: 140, Valid: 17, Test: 19)
+canoe slamon                   :  174 images (Train: 139, Valid: 17, Test: 18)
+roller derby                   :  173 images (Train: 138, Valid: 17, Test: 18)
+
+================================================================================
+TOP 10 LEAST REPRESENTED CLASSES
+--------------------------------------------------------------------------------
+sky surfing                    :   69 images (Train: 55, Valid: 6, Test: 8)
+ultimate                       :  107 images (Train: 85, Valid: 10, Test: 12)
+wingsuit flying                :  108 images (Train: 86, Valid: 10, Test: 12)
+arm wrestling                  :  109 images (Train: 87, Valid: 10, Test: 12)
+horseshoe pitching             :  112 images (Train: 89, Valid: 11, Test: 12)
+water cycling                  :  113 images (Train: 90, Valid: 11, Test: 12)
+wheelchair basketball          :  116 images (Train: 92, Valid: 11, Test: 13)
+hydroplane racing              :  118 images (Train: 94, Valid: 11, Test: 13)
+baton twirling                 :  118 images (Train: 94, Valid: 11, Test: 13)
+bike polo                      :  120 images (Train: 96, Valid: 12, Test: 12)
+
+================================================================================
+RECOMMENDATIONS
+--------------------------------------------------------------------------------
+⚠ MODERATE CLASS IMBALANCE DETECTED
+  The imbalance ratio is 2.91.
+  Consider using class weights or data augmentation.
+
+================================================================================
