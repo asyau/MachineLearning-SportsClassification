@@ -1,0 +1,29 @@
+======================================================================
+Data Augmentation Report
+======================================================================
+
+Threshold: 100 images
+Target: 110 images
+Classes augmented: 16
+Total augmented images: 310
+
+----------------------------------------------------------------------
+Class Name                       Original    Augmented      Total
+----------------------------------------------------------------------
+air hockey                             97           13        110
+ampute football                        97           13        110
+arm wrestling                          87           23        110
+axe throwing                           98           12        110
+baton twirling                         94           16        110
+bike polo                              96           14        110
+horseshoe pitching                     89           21        110
+hydroplane racing                      94           16        110
+ice yachting                           97           13        110
+mushing                                96           14        110
+pole dancing                           97           13        110
+sky surfing                            55           55        110
+ultimate                               85           25        110
+water cycling                          90           20        110
+wheelchair basketball                  92           18        110
+wingsuit flying                        86           24        110
+======================================================================

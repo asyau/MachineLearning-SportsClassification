@@ -1,0 +1,109 @@
+============================================================
+Training Set Class Sizes
+============================================================
+
+air hockey - 110
+ampute football - 110
+archery - 113
+arm wrestling - 110
+axe throwing - 110
+balance beam - 125
+barell racing - 106
+baseball - 147
+basketball - 143
+baton twirling - 110
+bike polo - 110
+billiards - 124
+bmx - 120
+bobsled - 118
+bowling - 104
+boxing - 100
+bull riding - 127
+bungee jumping - 108
+canoe slamon - 139
+cheerleading - 112
+chuckwagon racing - 104
+cricket - 111
+croquet - 115
+curling - 120
+disc golf - 106
+fencing - 116
+field hockey - 133
+figure skating men - 110
+figure skating pairs - 128
+figure skating women - 133
+fly fishing - 115
+football - 160
+formula 1 racing - 160
+frisbee - 112
+gaga - 102
+giant slalom - 128
+golf - 133
+hammer throw - 105
+hang gliding - 104
+harness racing - 125
+high jump - 134
+hockey - 145
+horse jumping - 115
+horse racing - 119
+horseshoe pitching - 110
+hurdles - 116
+hydroplane racing - 110
+ice climbing - 112
+ice yachting - 110
+jai alai - 113
+javelin - 116
+jousting - 102
+judo - 128
+lacrosse - 128
+log rolling - 110
+luge - 109
+motorcycle racing - 113
+mushing - 110
+nascar racing - 159
+olympic wrestling - 141
+parallel bar - 112
+pole climbing - 102
+pole dancing - 110
+pole vault - 118
+polo - 133
+pommel horse - 104
+rings - 133
+rock climbing - 120
+roller derby - 138
+rollerblade racing - 135
+rowing - 122
+rugby - 140
+sailboat racing - 123
+shot put - 127
+shuffleboard - 112
+sidecar racing - 114
+ski jumping - 112
+sky surfing - 110
+skydiving - 126
+snow boarding - 101
+snowmobile racing - 125
+speed skating - 116
+steer wrestling - 105
+sumo wrestling - 114
+surfing - 121
+swimming - 133
+table tennis - 120
+tennis - 112
+track bicycle - 116
+trapeze - 108
+tug of war - 110
+ultimate - 110
+uneven bars - 132
+volleyball - 121
+water cycling - 110
+water polo - 112
+weightlifting - 115
+wheelchair basketball - 110
+wheelchair racing - 103
+wingsuit flying - 110
+
+============================================================
+Total Classes: 100
+Total Images: 11861
+============================================================
