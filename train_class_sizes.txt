@@ -8,7 +8,7 @@ archery - 113
 arm wrestling - 110
 axe throwing - 110
 balance beam - 125
-barell racing - 106
+barell racing - 110
 baseball - 147
 basketball - 143
 baton twirling - 110
@@ -16,17 +16,17 @@ bike polo - 110
 billiards - 124
 bmx - 120
 bobsled - 118
-bowling - 104
-boxing - 100
+bowling - 110
+boxing - 110
 bull riding - 127
-bungee jumping - 108
+bungee jumping - 110
 canoe slamon - 139
 cheerleading - 112
-chuckwagon racing - 104
+chuckwagon racing - 110
 cricket - 111
 croquet - 115
 curling - 120
-disc golf - 106
+disc golf - 110
 fencing - 116
 field hockey - 133
 figure skating men - 110
@@ -36,11 +36,11 @@ fly fishing - 115
 football - 160
 formula 1 racing - 160
 frisbee - 112
-gaga - 102
+gaga - 110
 giant slalom - 128
 golf - 133
-hammer throw - 105
-hang gliding - 104
+hammer throw - 110
+hang gliding - 110
 harness racing - 125
 high jump - 134
 hockey - 145
@@ -53,21 +53,21 @@ ice climbing - 112
 ice yachting - 110
 jai alai - 113
 javelin - 116
-jousting - 102
+jousting - 110
 judo - 128
 lacrosse - 128
 log rolling - 110
-luge - 109
+luge - 110
 motorcycle racing - 113
 mushing - 110
 nascar racing - 159
 olympic wrestling - 141
 parallel bar - 112
-pole climbing - 102
+pole climbing - 110
 pole dancing - 110
 pole vault - 118
 polo - 133
-pommel horse - 104
+pommel horse - 110
 rings - 133
 rock climbing - 120
 roller derby - 138
@@ -81,17 +81,17 @@ sidecar racing - 114
 ski jumping - 112
 sky surfing - 110
 skydiving - 126
-snow boarding - 101
+snow boarding - 110
 snowmobile racing - 125
 speed skating - 116
-steer wrestling - 105
+steer wrestling - 110
 sumo wrestling - 114
 surfing - 121
 swimming - 133
 table tennis - 120
 tennis - 112
 track bicycle - 116
-trapeze - 108
+trapeze - 110
 tug of war - 110
 ultimate - 110
 uneven bars - 132
@@ -100,10 +100,10 @@ water cycling - 110
 water polo - 112
 weightlifting - 115
 wheelchair basketball - 110
-wheelchair racing - 103
+wheelchair racing - 110
 wingsuit flying - 110
 
 ============================================================
 Total Classes: 100
-Total Images: 11861
+Total Images: 11958
 ============================================================

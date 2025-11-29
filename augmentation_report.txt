@@ -2,28 +2,29 @@
 Data Augmentation Report
 ======================================================================
 
-Threshold: 100 images
+Threshold: 110 images
 Target: 110 images
-Classes augmented: 16
-Total augmented images: 310
+Classes augmented: 17
+Total augmented images: 97
 
 ----------------------------------------------------------------------
 Class Name                       Original    Augmented      Total
 ----------------------------------------------------------------------
-air hockey                             97           13        110
-ampute football                        97           13        110
-arm wrestling                          87           23        110
-axe throwing                           98           12        110
-baton twirling                         94           16        110
-bike polo                              96           14        110
-horseshoe pitching                     89           21        110
-hydroplane racing                      94           16        110
-ice yachting                           97           13        110
-mushing                                96           14        110
-pole dancing                           97           13        110
-sky surfing                            55           55        110
-ultimate                               85           25        110
-water cycling                          90           20        110
-wheelchair basketball                  92           18        110
-wingsuit flying                        86           24        110
+barell racing                         106            4        110
+bowling                               104            6        110
+boxing                                100           10        110
+bungee jumping                        108            2        110
+chuckwagon racing                     104            6        110
+disc golf                             106            4        110
+gaga                                  102            8        110
+hammer throw                          105            5        110
+hang gliding                          104            6        110
+jousting                              102            8        110
+luge                                  109            1        110
+pole climbing                         102            8        110
+pommel horse                          104            6        110
+snow boarding                         101            9        110
+steer wrestling                       105            5        110
+trapeze                               108            2        110
+wheelchair racing                     103            7        110
 ======================================================================

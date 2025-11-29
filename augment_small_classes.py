@@ -321,7 +321,7 @@ def augment_small_classes(train_dir='train', threshold=100, target=110):
 if __name__ == "__main__":
     # Configuration
     TRAIN_DIR = Path(__file__).parent / 'train'
-    THRESHOLD = 100  # Augment classes with fewer than this many images
+    THRESHOLD = 110  # Augment classes with fewer than this many images
     TARGET = 110     # Target number of images per class
     
     # Run augmentation
