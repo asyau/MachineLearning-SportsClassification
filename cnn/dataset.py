@@ -98,32 +98,32 @@ def get_transforms(image_size=224, is_train=False, aug_prob=0.5):
         aug_prob: Augmentation uygulanma olasılığı
     """
     if is_train and Config.USE_AUGMENTATION:
-        # Training için güçlü augmentation
+        # Training için güçlü augmentation (geliştirilmiş)
         transform = transforms.Compose([
-            transforms.Resize((image_size + 32, image_size + 32)),
+            transforms.Resize((image_size + 48, image_size + 48)),  # Daha büyük resize (32 -> 48)
             transforms.RandomCrop(image_size),
             transforms.RandomHorizontalFlip(p=aug_prob),
-            transforms.RandomVerticalFlip(p=aug_prob * 0.5),  # Daha az vertical flip
-            transforms.RandomRotation(degrees=15),
+            transforms.RandomVerticalFlip(p=aug_prob * 0.3),  # Vertical flip daha az
+            transforms.RandomRotation(degrees=20),  # Rotation artırıldı (15 -> 20)
             transforms.ColorJitter(
-                brightness=0.2,
-                contrast=0.2,
-                saturation=0.2,
-                hue=0.1
+                brightness=0.3,  # Artırıldı (0.2 -> 0.3)
+                contrast=0.3,    # Artırıldı (0.2 -> 0.3)
+                saturation=0.3,  # Artırıldı (0.2 -> 0.3)
+                hue=0.15         # Artırıldı (0.1 -> 0.15)
             ),
             transforms.RandomAffine(
-                degrees=0,
-                translate=(0.1, 0.1),
-                scale=(0.9, 1.1),
-                shear=5
+                degrees=10,      # Rotation eklendi
+                translate=(0.15, 0.15),  # Artırıldı (0.1 -> 0.15)
+                scale=(0.85, 1.15),     # Artırıldı (0.9-1.1 -> 0.85-1.15)
+                shear=10         # Artırıldı (5 -> 10)
             ),
-            transforms.RandomPerspective(distortion_scale=0.2, p=aug_prob * 0.5),
+            transforms.RandomPerspective(distortion_scale=0.3, p=aug_prob * 0.5),  # Artırıldı (0.2 -> 0.3)
             transforms.ToTensor(),
             transforms.Normalize(
                 mean=[0.485, 0.456, 0.406],  # ImageNet normalization
                 std=[0.229, 0.224, 0.225]
             ),
-            transforms.RandomErasing(p=aug_prob * 0.3, scale=(0.02, 0.33)),  # Cutout benzeri
+            transforms.RandomErasing(p=aug_prob * 0.4, scale=(0.02, 0.4), ratio=(0.3, 3.3)),  # Güçlendirildi
         ])
     else:
         # Validation/Test için sadece preprocessing

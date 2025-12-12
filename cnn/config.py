@@ -17,28 +17,28 @@ class Config:
     
     # Model settings
     NUM_CLASSES = 100
-    IMAGE_SIZE = 224  # ResNet/EfficientNet için standart
-    BATCH_SIZE = 32
-    NUM_WORKERS = 4  # DataLoader için
+    IMAGE_SIZE = 256  # Daha büyük image size (224 -> 256) accuracy artırır
+    BATCH_SIZE = 24  # Image size artınca batch size düşürüldü (32 -> 24) (GPU memory için)
+    NUM_WORKERS = 2  # DataLoader için (sistem önerisi: 2)
     PIN_MEMORY = True
     
     # Model architecture
-    MODEL_NAME = 'efficientnet_b3'  # 'resnet50', 'efficientnet_b0-b7', 'vit_b_16'
+    MODEL_NAME = 'efficientnet_b4'  # B3 -> B4 (daha büyük model, daha iyi accuracy)
     PRETRAINED = True
     FREEZE_BACKBONE = False  # Transfer learning için backbone'u dondur
     
     # Training hyperparameters
     NUM_EPOCHS = 100
-    LEARNING_RATE = 0.001
+    LEARNING_RATE = 0.0005  # Daha küçük LR (0.001 -> 0.0005) daha stabil training
     WEIGHT_DECAY = 1e-4
     MOMENTUM = 0.9
     
     # Learning rate scheduling
-    LR_SCHEDULER = 'cosine'  # 'step', 'cosine', 'plateau', 'warmup_cosine'
+    LR_SCHEDULER = 'warmup_cosine'  # Warmup + Cosine (daha iyi convergence)
     LR_STEP_SIZE = 30  # StepLR için
     LR_GAMMA = 0.1  # StepLR için
     LR_MIN = 1e-6  # Minimum learning rate
-    WARMUP_EPOCHS = 5  # Warmup için
+    WARMUP_EPOCHS = 10  # Warmup epochs artırıldı (5 -> 10)
     
     # Optimizer
     OPTIMIZER = 'adamw'  # 'adam', 'adamw', 'sgd'
@@ -46,10 +46,17 @@ class Config:
     # Loss function
     USE_CLASS_WEIGHTS = True  # Imbalance için class weights kullan
     LABEL_SMOOTHING = 0.1  # Label smoothing factor (0 = disabled)
+    USE_FOCAL_LOSS = False  # Focal Loss (imbalance için, class weights ile birlikte kullanılabilir)
+    FOCAL_ALPHA = 0.25  # Focal Loss alpha
+    FOCAL_GAMMA = 2.0  # Focal Loss gamma
     
     # Data augmentation
     USE_AUGMENTATION = True
-    AUG_PROB = 0.5  # Augmentation uygulanma olasılığı
+    AUG_PROB = 0.7  # Augmentation olasılığı artırıldı (0.5 -> 0.7)
+    USE_MIXUP = True  # Mixup augmentation (accuracy artırır)
+    MIXUP_ALPHA = 0.2  # Mixup alpha değeri
+    USE_CUTMIX = True  # CutMix augmentation
+    CUTMIX_ALPHA = 1.0  # CutMix alpha değeri
     
     # Training techniques
     USE_MIXED_PRECISION = True  # FP16 training (hız için)
@@ -58,8 +65,8 @@ class Config:
     
     # Early stopping
     EARLY_STOPPING = True
-    EARLY_STOPPING_PATIENCE = 15
-    EARLY_STOPPING_MIN_DELTA = 0.001
+    EARLY_STOPPING_PATIENCE = 20  # Patience artırıldı (15 -> 20)
+    EARLY_STOPPING_MIN_DELTA = 0.0005  # Min delta azaltıldı (daha hassas)
     
     # Model checkpointing
     SAVE_DIR = BASE_DIR / 'checkpoints'
@@ -69,6 +76,8 @@ class Config:
     # Evaluation
     EVAL_METRICS = ['accuracy', 'precision', 'recall', 'f1']
     TOP_K_ACCURACY = [1, 3, 5]  # Top-k accuracy hesapla
+    USE_TTA = True  # Test Time Augmentation (inference'da accuracy artırır)
+    TTA_NUM = 5  # TTA için augmentation sayısı
     
     # Logging
     LOG_DIR = BASE_DIR / 'logs'

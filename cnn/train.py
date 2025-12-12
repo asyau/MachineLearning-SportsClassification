@@ -5,7 +5,7 @@ Ana Training Script - Comprehensive CNN Training
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.cuda.amp import GradScaler, autocast
+from torch.amp import GradScaler, autocast
 from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 from tqdm import tqdm
@@ -19,7 +19,9 @@ from .utils import (
     calculate_metrics, top_k_accuracy, save_checkpoint,
     plot_training_history, set_seed, get_device
 )
+from .augmentation import mixup_data, cutmix_data, mixup_criterion
 from sklearn.metrics import accuracy_score
+import random
 
 
 class EarlyStopping:
@@ -66,13 +68,30 @@ def train_epoch(model, train_loader, criterion, optimizer, device, scaler, confi
         images = images.to(device)
         labels = labels.to(device)
         
+        # Apply Mixup or CutMix
+        use_mixup = config.USE_MIXUP and random.random() < 0.5
+        use_cutmix = config.USE_CUTMIX and not use_mixup and random.random() < 0.5
+        
+        if use_mixup:
+            mixed_images, y_a, y_b, lam = mixup_data(images, labels, alpha=config.MIXUP_ALPHA)
+        elif use_cutmix:
+            mixed_images, y_a, y_b, lam = cutmix_data(images, labels, alpha=config.CUTMIX_ALPHA)
+        else:
+            mixed_images = images
+            y_a = labels
+            y_b = None
+            lam = 1.0
+        
         # Forward pass
         optimizer.zero_grad()
         
         if config.USE_MIXED_PRECISION:
-            with autocast():
-                outputs = model(images)
-                loss = criterion(outputs, labels)
+            with autocast('cuda'):
+                outputs = model(mixed_images)
+                if use_mixup or use_cutmix:
+                    loss = mixup_criterion(criterion, outputs, y_a, y_b, lam)
+                else:
+                    loss = criterion(outputs, labels)
             
             scaler.scale(loss).backward()
             
@@ -83,8 +102,11 @@ def train_epoch(model, train_loader, criterion, optimizer, device, scaler, confi
             scaler.step(optimizer)
             scaler.update()
         else:
-            outputs = model(images)
-            loss = criterion(outputs, labels)
+            outputs = model(mixed_images)
+            if use_mixup or use_cutmix:
+                loss = mixup_criterion(criterion, outputs, y_a, y_b, lam)
+            else:
+                loss = criterion(outputs, labels)
             loss.backward()
             
             if config.GRADIENT_CLIP > 0:
@@ -92,11 +114,11 @@ def train_epoch(model, train_loader, criterion, optimizer, device, scaler, confi
             
             optimizer.step()
         
-        # Metrics
+        # Metrics (use original labels for accuracy calculation)
         running_loss += loss.item()
         _, preds = torch.max(outputs, 1)
         all_preds.extend(preds.cpu().numpy())
-        all_labels.extend(labels.cpu().numpy())
+        all_labels.extend(y_a.cpu().numpy())  # Use y_a for metrics
         
         # Progress bar update
         if (batch_idx + 1) % config.PRINT_FREQ == 0:
@@ -126,7 +148,7 @@ def validate_epoch(model, valid_loader, criterion, device, config):
             labels = labels.to(device)
             
             if config.USE_MIXED_PRECISION:
-                with autocast():
+                with autocast('cuda'):
                     outputs = model(images)
                     loss = criterion(outputs, labels)
             else:
@@ -271,7 +293,7 @@ def train(config):
     scheduler = get_scheduler(optimizer, config, config.NUM_EPOCHS, num_batches_per_epoch)
     
     # Mixed precision
-    scaler = GradScaler() if config.USE_MIXED_PRECISION else None
+    scaler = GradScaler('cuda') if config.USE_MIXED_PRECISION else None
     
     # Early stopping
     early_stopping = EarlyStopping(
