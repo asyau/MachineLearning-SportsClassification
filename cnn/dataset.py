@@ -16,22 +16,27 @@ from .config import Config
 class SportsDataset(Dataset):
     """Sports classification dataset"""
     
-    def __init__(self, data_dir, transform=None, is_train=False):
+    def __init__(self, data_dir, transform=None, is_train=False, class_sample_counts=None, mean_sample_count=None):
         """
         Args:
             data_dir: Veri dizini (train/valid/test)
             transform: Image transformations
             is_train: Training modunda mı (augmentation için)
+            class_sample_counts: Her sınıfın örnek sayısı dict (sınıf bazlı augmentation için)
+            mean_sample_count: Ortalama örnek sayısı (sınıf bazlı augmentation için)
         """
         self.data_dir = Path(data_dir)
         self.transform = transform
         self.is_train = is_train
+        self.class_sample_counts = class_sample_counts or {}
+        self.mean_sample_count = mean_sample_count
         
         # Tüm görüntüleri ve etiketlerini topla
         self.images = []
         self.labels = []
         self.class_to_idx = {}
         self.idx_to_class = {}
+        self.image_class_indices = []  # Her görüntünün hangi sınıfa ait olduğunu tut
         
         self._load_data()
     
@@ -58,6 +63,7 @@ class SportsDataset(Dataset):
                 if img_path.suffix in image_extensions:
                     self.images.append(str(img_path))
                     self.labels.append(class_idx)
+                    self.image_class_indices.append(class_idx)
         
         print(f"Loaded {len(self.images)} images from {len(self.class_to_idx)} classes")
     
@@ -77,9 +83,24 @@ class SportsDataset(Dataset):
             # Hata durumunda siyah bir görüntü döndür
             image = Image.new('RGB', (Config.IMAGE_SIZE, Config.IMAGE_SIZE), (0, 0, 0))
         
-        # Transform uygula
+        # Sınıf bazlı transform uygula (eğer training modundaysa ve sınıf bilgisi varsa)
         if self.transform:
-            image = self.transform(image)
+            if self.is_train and self.class_sample_counts and self.mean_sample_count:
+                # Bu sınıfın örnek sayısını al
+                class_name = self.idx_to_class[label]
+                class_sample_count = self.class_sample_counts.get(class_name, self.mean_sample_count)
+                # Sınıf bazlı transform oluştur
+                class_transform = get_transforms(
+                    image_size=Config.IMAGE_SIZE,
+                    is_train=True,
+                    aug_prob=Config.AUG_PROB,
+                    class_sample_count=class_sample_count,
+                    mean_sample_count=self.mean_sample_count
+                )
+                image = class_transform(image)
+            else:
+                # Normal transform
+                image = self.transform(image)
         
         return image, label
     
@@ -88,7 +109,7 @@ class SportsDataset(Dataset):
         return Counter(self.labels)
 
 
-def get_transforms(image_size=224, is_train=False, aug_prob=0.5):
+def get_transforms(image_size=224, is_train=False, aug_prob=0.5, class_sample_count=None, mean_sample_count=None):
     """
     Data augmentation ve preprocessing transforms
     
@@ -96,34 +117,63 @@ def get_transforms(image_size=224, is_train=False, aug_prob=0.5):
         image_size: Görüntü boyutu
         is_train: Training modunda mı
         aug_prob: Augmentation uygulanma olasılığı
+        class_sample_count: Bu sınıfın örnek sayısı (sınıf bazlı augmentation için)
+        mean_sample_count: Ortalama örnek sayısı (sınıf bazlı augmentation için)
     """
     if is_train and Config.USE_AUGMENTATION:
-        # Training için güçlü augmentation (geliştirilmiş)
+        # Sınıf bazlı augmentation: Az örnekli sınıflar için daha agresif augmentation
+        if class_sample_count is not None and mean_sample_count is not None:
+            # Örnek sayısı ortalamanın altındaysa daha güçlü augmentation
+            if class_sample_count < mean_sample_count * 0.8:  # %20'den fazla eksikse
+                aug_strength = 1.3  # %30 daha güçlü augmentation
+                rotation_degrees = 25  # Daha fazla rotation
+                color_jitter_strength = 0.4  # Daha güçlü color jitter
+            elif class_sample_count < mean_sample_count * 0.9:  # %10-20 eksikse
+                aug_strength = 1.15  # %15 daha güçlü augmentation
+                rotation_degrees = 22
+                color_jitter_strength = 0.35
+            else:
+                aug_strength = 1.0  # Normal augmentation
+                rotation_degrees = 20
+                color_jitter_strength = 0.3
+        else:
+            # Sınıf bilgisi yoksa normal augmentation
+            aug_strength = 1.0
+            rotation_degrees = 20
+            color_jitter_strength = 0.3
+        # Training için güçlü augmentation (sınıf bazlı ayarlanabilir)
         transform = transforms.Compose([
-            transforms.Resize((image_size + 48, image_size + 48)),  # Daha büyük resize (32 -> 48)
+            transforms.Resize((image_size + int(48 * aug_strength), image_size + int(48 * aug_strength))),
             transforms.RandomCrop(image_size),
-            transforms.RandomHorizontalFlip(p=aug_prob),
-            transforms.RandomVerticalFlip(p=aug_prob * 0.3),  # Vertical flip daha az
-            transforms.RandomRotation(degrees=20),  # Rotation artırıldı (15 -> 20)
+            transforms.RandomHorizontalFlip(p=min(aug_prob * aug_strength, 1.0)),
+            transforms.RandomVerticalFlip(p=min(aug_prob * 0.3 * aug_strength, 1.0)),
+            transforms.RandomRotation(degrees=int(rotation_degrees * aug_strength)),
             transforms.ColorJitter(
-                brightness=0.3,  # Artırıldı (0.2 -> 0.3)
-                contrast=0.3,    # Artırıldı (0.2 -> 0.3)
-                saturation=0.3,  # Artırıldı (0.2 -> 0.3)
-                hue=0.15         # Artırıldı (0.1 -> 0.15)
+                brightness=color_jitter_strength * aug_strength,
+                contrast=color_jitter_strength * aug_strength,
+                saturation=color_jitter_strength * aug_strength,
+                hue=0.15 * aug_strength
             ),
             transforms.RandomAffine(
-                degrees=10,      # Rotation eklendi
-                translate=(0.15, 0.15),  # Artırıldı (0.1 -> 0.15)
-                scale=(0.85, 1.15),     # Artırıldı (0.9-1.1 -> 0.85-1.15)
-                shear=10         # Artırıldı (5 -> 10)
+                degrees=int(10 * aug_strength),
+                translate=(0.15 * aug_strength, 0.15 * aug_strength),
+                scale=(max(0.85 - 0.1 * (aug_strength - 1), 0.75), min(1.15 + 0.1 * (aug_strength - 1), 1.25)),
+                shear=int(10 * aug_strength)
             ),
-            transforms.RandomPerspective(distortion_scale=0.3, p=aug_prob * 0.5),  # Artırıldı (0.2 -> 0.3)
+            transforms.RandomPerspective(
+                distortion_scale=min(0.3 * aug_strength, 0.5),
+                p=min(aug_prob * 0.5 * aug_strength, 1.0)
+            ),
             transforms.ToTensor(),
             transforms.Normalize(
                 mean=[0.485, 0.456, 0.406],  # ImageNet normalization
                 std=[0.229, 0.224, 0.225]
             ),
-            transforms.RandomErasing(p=aug_prob * 0.4, scale=(0.02, 0.4), ratio=(0.3, 3.3)),  # Güçlendirildi
+            transforms.RandomErasing(
+                p=min(aug_prob * 0.4 * aug_strength, 1.0),
+                scale=(0.02, min(0.4 * aug_strength, 0.5)),
+                ratio=(0.3, 3.3)
+            ),
         ])
     else:
         # Validation/Test için sadece preprocessing
@@ -193,10 +243,29 @@ def get_data_loaders(config):
     )
     
     # Datasets
+    # Önce train dataset'i yükle (sınıf sayılarını almak için)
+    temp_dataset = SportsDataset(
+        data_dir=config.TRAIN_DIR,
+        transform=None,
+        is_train=False
+    )
+    
+    # Sınıf bazlı örnek sayılarını hesapla
+    class_counts = temp_dataset.get_class_counts()
+    class_sample_counts = {}
+    for class_idx, count in class_counts.items():
+        class_name = temp_dataset.idx_to_class[class_idx]
+        class_sample_counts[class_name] = count
+    
+    mean_sample_count = sum(class_counts.values()) / len(class_counts) if class_counts else None
+    
+    # Şimdi gerçek train dataset'i oluştur (sınıf bazlı augmentation ile)
     train_dataset = SportsDataset(
         data_dir=config.TRAIN_DIR,
         transform=train_transform,
-        is_train=True
+        is_train=True,
+        class_sample_counts=class_sample_counts,
+        mean_sample_count=mean_sample_count
     )
     valid_dataset = SportsDataset(
         data_dir=config.VALID_DIR,
