@@ -28,7 +28,7 @@ class Config:
     FREEZE_BACKBONE = False  # Transfer learning için backbone'u dondur
     
     # Training hyperparameters
-    NUM_EPOCHS = 20
+    NUM_EPOCHS = 10
     LEARNING_RATE = 0.0005  # Daha küçük LR (0.001 -> 0.0005) daha stabil training
     WEIGHT_DECAY = 1e-4
     MOMENTUM = 0.9
@@ -38,7 +38,7 @@ class Config:
     LR_STEP_SIZE = 30  # StepLR için
     LR_GAMMA = 0.1  # StepLR için
     LR_MIN = 1e-6  # Minimum learning rate
-    WARMUP_EPOCHS = 5  # Warmup epochs (epoch sayısı azaldığı için 5'e düşürüldü)
+    WARMUP_EPOCHS = 3  # Warmup epochs (epoch sayısı 10 olduğu için 3'e düşürüldü)
     
     # Optimizer
     OPTIMIZER = 'adamw'  # 'adam', 'adamw', 'sgd'
@@ -65,7 +65,7 @@ class Config:
     
     # Early stopping
     EARLY_STOPPING = True
-    EARLY_STOPPING_PATIENCE = 7  # Patience (epoch sayısı 20 olduğu için 7'ye düşürüldü)
+    EARLY_STOPPING_PATIENCE = 5  # Patience (epoch sayısı 10 olduğu için 5'e düşürüldü)
     EARLY_STOPPING_MIN_DELTA = 0.0005  # Min delta azaltıldı (daha hassas)
     
     # Model checkpointing
