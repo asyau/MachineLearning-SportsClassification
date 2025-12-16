@@ -28,7 +28,7 @@ class Config:
     FREEZE_BACKBONE = False  # Transfer learning için backbone'u dondur
     
     # Training hyperparameters
-    NUM_EPOCHS = 50
+    NUM_EPOCHS = 20
     LEARNING_RATE = 0.0005  # Daha küçük LR (0.001 -> 0.0005) daha stabil training
     WEIGHT_DECAY = 1e-4
     MOMENTUM = 0.9
@@ -65,7 +65,7 @@ class Config:
     
     # Early stopping
     EARLY_STOPPING = True
-    EARLY_STOPPING_PATIENCE = 10  # Patience (epoch sayısı azaldığı için 10'a düşürüldü)
+    EARLY_STOPPING_PATIENCE = 7  # Patience (epoch sayısı 20 olduğu için 7'ye düşürüldü)
     EARLY_STOPPING_MIN_DELTA = 0.0005  # Min delta azaltıldı (daha hassas)
     
     # Model checkpointing
