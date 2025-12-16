@@ -20,6 +20,7 @@ from .utils import (
     plot_training_history, set_seed, get_device
 )
 from .augmentation import mixup_data, cutmix_data, mixup_criterion
+from .evaluate import evaluate
 from sklearn.metrics import accuracy_score
 import random
 
@@ -411,6 +412,15 @@ def train(config):
     # Close TensorBoard writer
     if writer:
         writer.close()
+    
+    # Test setinde değerlendirme
+    print("\n" + "=" * 80)
+    print("TEST SET EVALUATION")
+    print("=" * 80)
+    test_metrics = evaluate(config, checkpoint_path=config.get_best_model_path(), split='test')
+    
+    print(f"\n✅ Final Test Accuracy: {test_metrics['accuracy']:.4f}")
+    print(f"✅ Final Test F1 (Macro): {test_metrics['f1_macro']:.4f}")
     
     return model, history
 
