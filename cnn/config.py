@@ -28,7 +28,7 @@ class Config:
     FREEZE_BACKBONE = False  # Transfer learning için backbone'u dondur
     
     # Training hyperparameters
-    NUM_EPOCHS = 10
+    NUM_EPOCHS = 15
     LEARNING_RATE = 0.0005  # Daha küçük LR (0.001 -> 0.0005) daha stabil training
     WEIGHT_DECAY = 1e-4
     MOMENTUM = 0.9
