@@ -1,205 +1,347 @@
-# MachineLearning-SportsClassification
+# Machine Learning Sports Classification
 
-A machine learning project for classifying 100 different sports from images.
+A comprehensive machine learning project for classifying 100 sports categories from images using both deep learning (CNNs) and traditional machine learning approaches.
+
+---
+
+## Overview
+
+This project implements and compares multiple approaches for sports image classification:
+
+- Deep Learning (CNNs): ResNet, EfficientNet, Vision Transformer
+- Traditional ML: KNN, Random Forest, SVM
+- Feature Extraction: Color Histograms, HOG, LBP
+- Dataset Analysis & Augmentation utilities
+
+Dataset size: 14,899 images across 100 sports categories.
+
+---
 
 ## Dataset
 
-The dataset contains **14,492 images** across **100 sports categories**, organized into:
+### Dataset Statistics
 
-- **Training set**: 11,551 images
-- **Validation set**: 1,405 images  
-- **Test set**: 1,536 images
+- Training: 11,958 images
+- Validation: 1,405 images
+- Test: 1,536 images
+- Total: 14,899 images
 
-### Sports Categories (100 total)
-
-The dataset includes diverse sports such as: air hockey, ampute football, archery, arm wrestling, axe throwing, balance beam, baseball, basketball, BMX, boxing, cricket, curling, fencing, figure skating, football, golf, gymnastics, hockey, judo, lacrosse, NASCAR racing, Olympic wrestling, pole vault, rock climbing, rugby, skiing, snowboarding, surfing, swimming, tennis, volleyball, weightlifting, and many more.
-
-### Dataset Structure
+### Directory Structure
 
 ```
 MachineLearning-SportsClassification/
-├── train/          # Training images (11,551 images)
+├── train/
 │   ├── air hockey/
 │   ├── archery/
-│   ├── baseball/
-│   └── ... (100 categories)
-├── test/           # Test images (1,536 images)
-│   └── ... (100 categories)
-└── valid/          # Validation images (1,405 images)
-    └── ... (100 categories)
+│   └── ... (100 classes)
+├── valid/
+│   └── ... (100 classes)
+└── test/
+    └── ... (100 classes)
 ```
 
-## Dataset Download
+---
 
-**Note**: The image datasets are not included in this repository due to size constraints.
+## Quick Start
 
-### Option 1: Google Drive (Recommended)
-Download the dataset from: [Add your link here]
+### 1. Environment Setup
 
-### Option 2: Other sources
-[Add alternative download links]
-
-## Installation
+**Important:** Use Python 3.10–3.12 (Python 3.13 is not supported by some ML libraries).
 
 ```bash
-# Clone the repository
 git clone https://github.com/asyau/MachineLearning-SportsClassification.git
 cd MachineLearning-SportsClassification
 
-# Install dependencies (after you add requirements.txt)
-pip install -r requirements.txt
+python -m venv venv
+source venv/bin/activate  # macOS / Linux
+# venv\Scripts\activate  # Windows
 
-# Download and extract the dataset to the project root
-# Ensure you have train/, test/, and valid/ directories
+pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
-## Installation
+---
+
+### 2. Dataset Preparation
+
+Ensure your dataset is placed in the project root:
+
+```
+train/
+valid/
+test/
+```
+
+---
+
+## Dataset Analysis & Preparation (Optional)
+
+### Analyze Class Distribution
 
 ```bash
-# Clone the repository
-git clone https://github.com/asyau/MachineLearning-SportsClassification.git
-cd MachineLearning-SportsClassification
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Download and extract the dataset to the project root
-# Ensure you have train/, test/, and valid/ directories
+python analyze_data_distribution.py
 ```
 
-## Usage
+**Outputs:**
+
+- Class distribution plots
+- Imbalance analysis
+- CSV summaries
+  (saved to `class-dist-analysis/`)
+
+---
+
+### Get Class Sizes
+
+```bash
+python get_train_class_sizes.py
+```
+
+**Outputs:**
+
+- `train_class_sizes.txt`
+
+---
+
+### Augment Small Classes
+
+Augments classes with fewer than 110 images.
+
+```bash
+python augment_small_classes.py
+```
+
+---
+
+### Create Train/Validation/Test Split
+
+```bash
+python create_train_val_test_split.py
+```
+
+Edit the script to configure:
+
+- Input directory
+- Output directory
+- Split ratios (default: 80 / 10 / 10)
+
+---
+
+## Deep Learning (CNN) – Recommended
 
 ### Training
-
-Modeli eğitmek için:
 
 ```bash
 python train.py
 ```
 
-Training ayarlarını değiştirmek için `config.py` dosyasını düzenleyin:
+or
 
-- **Model Architecture**: `MODEL_NAME` (resnet50, efficientnet_b0-b4, vit_b_16)
-- **Batch Size**: `BATCH_SIZE`
-- **Learning Rate**: `LEARNING_RATE`
-- **Number of Epochs**: `NUM_EPOCHS`
-- **Data Augmentation**: `USE_AUGMENTATION`, `AUG_PROB`
-- **Class Weights**: `USE_CLASS_WEIGHTS` (imbalance için)
-- **Mixed Precision**: `USE_MIXED_PRECISION` (hız için)
-- **Early Stopping**: `EARLY_STOPPING`, `EARLY_STOPPING_PATIENCE`
+```bash
+cd cnn
+python train.py
+```
+
+### Configuration (`cnn/config.py`)
+
+```python
+MODEL_NAME = 'efficientnet_b4'  # resnet50, efficientnet_b0-b4, vit_b_16
+BATCH_SIZE = 24
+NUM_EPOCHS = 15
+LEARNING_RATE = 0.0005
+
+USE_CLASS_WEIGHTS = True
+USE_MIXED_PRECISION = True
+EARLY_STOPPING = True
+EARLY_STOPPING_PATIENCE = 5
+```
+
+---
 
 ### Evaluation
 
-Eğitilmiş modeli değerlendirmek için:
-
 ```bash
-# Test set üzerinde değerlendirme
 python evaluate.py
-
-# Validation set üzerinde değerlendirme
-python evaluate.py --split valid
-
-# Özel checkpoint kullan
-python evaluate.py --checkpoint checkpoints/last_model.pt
 ```
+
+**Supported metrics:**
+
+- Top-1 / Top-3 / Top-5 Accuracy
+- Precision, Recall, F1 (Macro & Weighted)
+- Confusion Matrix
+- Per-class metrics
+
+---
 
 ### Inference
 
-Yeni görüntüler için tahmin yapmak için:
+**Single image:**
 
 ```bash
-# Tek görüntü
 python inference.py --image path/to/image.jpg
+```
 
-# Klasördeki tüm görüntüler
+**Directory:**
+
+```bash
 python inference.py --dir path/to/images/
+```
 
-# Top-k tahmin sayısını belirle
+**Top-K predictions:**
+
+```bash
 python inference.py --image path/to/image.jpg --top_k 10
 ```
 
-## Project Structure
+**Custom checkpoint:**
 
-```
-MachineLearning-SportsClassification/
-├── README.md
-├── requirements.txt
-├── config.py              # Yapılandırma dosyası
-├── dataset.py             # Dataset ve DataLoader sınıfları
-├── model.py               # CNN model tanımları
-├── utils.py               # Yardımcı fonksiyonlar
-├── train.py               # Training script
-├── evaluate.py            # Evaluation script
-├── inference.py           # Inference script
-├── train/                 # Training dataset
-├── valid/                 # Validation dataset
-├── test/                  # Test dataset
-├── checkpoints/           # Model checkpoints (oluşturulur)
-└── logs/                  # TensorBoard logs (oluşturulur)
+```bash
+python inference.py --image path/to/image.jpg --checkpoint checkpoints/best_model.pt
 ```
 
-## Features
+---
 
-### Model Architecture
-- **Transfer Learning**: ResNet50, ResNet101, EfficientNet (B0-B4), Vision Transformer
-- **Custom Classifier**: Dropout ve batch normalization ile optimize edilmiş
-- **Flexible Backbone**: Pretrained weights ile başlatma veya sıfırdan eğitim
-
-### Training Features
-- **Data Augmentation**: Rotation, flipping, color jittering, random erasing, vb.
-- **Class Weights**: Imbalanced dataset için otomatik ağırlık hesaplama
-- **Learning Rate Scheduling**: Step, Cosine, Plateau, Warmup+Cosine
-- **Mixed Precision Training**: FP16 ile hızlı eğitim
-- **Gradient Clipping**: Gradient explosion önleme
-- **Early Stopping**: Overfitting önleme
-- **Model Checkpointing**: En iyi ve son model kaydetme
-
-### Evaluation Metrics
-- Accuracy (Top-1, Top-3, Top-5)
-- Precision, Recall, F1-Score (Macro ve Weighted)
-- Per-class metrics
-- Confusion Matrix
-- Classification Report
-
-### Visualization
-- Training history plots
-- Confusion matrix (normalized ve absolute)
-- TensorBoard integration
-
-## Configuration
-
-Tüm hyperparameterlar `config.py` dosyasında tanımlıdır. Önemli ayarlar:
-
-```python
-MODEL_NAME = 'efficientnet_b3'  # Model seçimi
-BATCH_SIZE = 32                  # Batch size
-LEARNING_RATE = 0.001            # Learning rate
-NUM_EPOCHS = 100                 # Epoch sayısı
-USE_CLASS_WEIGHTS = True         # Class imbalance için
-USE_MIXED_PRECISION = True       # Hızlı training
-EARLY_STOPPING = True            # Early stopping
-```
-
-## Results
-
-Model eğitimi tamamlandıktan sonra:
-- `checkpoints/best_model.pt`: En iyi model
-- `checkpoints/last_model.pt`: Son epoch modeli
-- `checkpoints/training_history.png`: Training grafikleri
-- `checkpoints/confusion_matrix_test.png`: Confusion matrix
-- `checkpoints/metrics_report_test.json`: Detaylı metrikler
-- `logs/`: TensorBoard logları
-
-## TensorBoard
-
-Training sırasında metrikleri görselleştirmek için:
+### TensorBoard
 
 ```bash
 tensorboard --logdir logs/
 ```
 
-Tarayıcıda `http://localhost:6006` adresini açın.
+Open: http://localhost:6006
 
-## License
+---
 
-[Add your license here]
+## Traditional Machine Learning Approaches
+
+### K-Nearest Neighbors (KNN)
+
+```bash
+python knn_color_histogram_only.py
+python knn_hog_only.py
+python knn_lbp_only.py
+```
+
+---
+
+### Random Forest (RF)
+
+```bash
+python rf_color_histogram_only.py
+python rf_hog_only.py
+python rf_lbp_only.py
+```
+
+---
+
+### Support Vector Machine (SVM)
+
+Edit `SVM_hog_color_lbp.py`:
+
+```python
+BASE_DIR = "."
+SELECTED_FEATURE = 'color'  # 'color', 'hog', 'lbp'
+USE_PCA = True
+```
+
+**Run:**
+
+```bash
+python SVM_hog_color_lbp.py
+```
+
+Outputs saved to `svm_output/`.
+
+---
+
+### Combined Features
+
+```bash
+python concatinated.py
+```
+
+Uses Color + HOG + LBP together.
+
+---
+
+## Project Structure
+
+```
+MachineLearning-SportsClassification/
+├── cnn/
+│   ├── config.py
+│   ├── dataset.py
+│   ├── model.py
+│   ├── train.py
+│   ├── evaluate.py
+│   ├── inference.py
+│   └── utils.py
+│
+├── train.py
+├── evaluate.py
+├── inference.py
+│
+├── analyze_data_distribution.py
+├── augment_small_classes.py
+├── create_train_val_test_split.py
+├── get_train_class_sizes.py
+│
+├── knn_*.py
+├── rf_*.py
+├── SVM_hog_color_lbp.py
+├── concatinated.py
+│
+├── train/
+├── valid/
+├── test/
+├── checkpoints/
+├── logs/
+└── class-dist-analysis/
+```
+
+---
+
+## Requirements (Core)
+
+Key dependencies (see `requirements.txt` for full list):
+
+- torch
+- torchvision
+- tensorflow
+- scikit-learn
+- opencv-python
+- numpy
+- pandas
+- matplotlib
+- seaborn
+- tensorboard
+
+---
+
+## Troubleshooting
+
+### CUDA Out of Memory
+
+- Reduce `BATCH_SIZE`
+- Reduce `IMAGE_SIZE`
+- Enable mixed precision
+
+### Slow Training
+
+- Use smaller model (`efficientnet_b0`)
+- Enable mixed precision
+- Increase `NUM_WORKERS`
+
+### Dataset Not Found
+
+- Ensure `train/`, `valid/`, `test/` exist in project root
+- Check `BASE_DIR` in scripts
+
+---
+
+## Notes
+
+- CNN models give significantly better accuracy than traditional ML
+- Traditional ML is useful for baseline comparisons
+- Class imbalance handling is strongly recommended
+
+---

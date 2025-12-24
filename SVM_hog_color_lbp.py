@@ -215,7 +215,8 @@ if __name__ == "__main__":
     # ==========================================
 
     # PLEASE CHANGE THE PATH BELOW TO YOUR DATASET DIRECTORY
-    BASE_DIR = "YOUR_DATASET_DIRECTORY_HERE"
+    # Automatically set BASE_DIR to project root (where this script lives)
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     # Directory where outputs (model and plots) will be saved
     OUTPUT_DIR = "svm_output"
@@ -227,12 +228,6 @@ if __name__ == "__main__":
     # ==========================================
     # END OF CONFIGURATION
     # ==========================================
-
-    # Path check
-    if BASE_DIR == "YOUR_DATASET_DIRECTORY_HERE":
-        print("\n[WARNING] Please change the 'BASE_DIR' variable to your own dataset path!")
-        print("Example: BASE_DIR = '/Users/ali/Desktop/SportsDataset'")
-        sys.exit(1)
 
     if not os.path.exists(BASE_DIR):
         print(f"\n[ERROR] Specified directory not found: {BASE_DIR}")

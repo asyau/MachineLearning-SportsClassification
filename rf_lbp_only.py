@@ -392,10 +392,11 @@ def rf_hyperparameter_search(train_dir, val_dir, save_dir='rf_search_lbp'):
 
 def main():
     # Paths
-    base_dir = 'MachineLearning-SportsClassification'
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
     train_dir = os.path.join(base_dir, 'train')
-    val_dir = os.path.join(base_dir, 'valid')
-    test_dir = os.path.join(base_dir, 'test')
+    val_dir   = os.path.join(base_dir, 'valid')
+    test_dir  = os.path.join(base_dir, 'test')
 
     try:
         import skimage
